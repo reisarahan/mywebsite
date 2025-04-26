@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Height of Right Cylinder Calculator</title>
+    <style>
+        :root {
+            --primary: #00796b;
+            --primary-dark: #004d40;
+            --primary-light: #b2dfdb;
+            --accent: #4db6ac;
+            --background: #e0f2f1;
+            --card-bg: #ffffff;
+            --text: #263238;
+            --text-light: #607d8b;
+            --border: #cfd8dc;
+            --error: #f44336;
+            --success: #00796b;
+            --warning: #ff9800;
+            --radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .calculator-container {
+            width: 100%;
+            max-width: 500px;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .calculator-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .calculator-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .calculator-header::after {
+            content: '';
+            position: absolute;
+            bottom: -50px;
+            left: -50px;
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        .calculator-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .calculator-subtitle {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            font-weight: 400;
+            position: relative;
+            z-index: 1;
+        }
+
+        .calculator-body {
+            padding: 25px;
+        }
+
+        .formula-display {
+            background: var(--primary-light);
+            border-radius: var(--radius);
+            padding: 15px;
+            margin-bottom: 25px;
+            text-align: center;
+            border-left: 4px solid var(--accent);
+            transition: all 0.3s ease;
+        }
+
+        .formula-text {
+            font-size: 1rem;
+            color: var(--text-light);
+            margin-bottom: 8px;
+        }
+
+        .formula {
+            font-family: 'Courier New', monospace;
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: var(--primary-dark);
+        }
+
+        .visualization {
+            margin: 25px 0;
+            text-align: center;
+            position: relative;
+        }
+
+        .cylinder-graphic {
+            width: 180px;
+            height: auto;
+            filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.1));
+            transition: all 0.5s ease;
+        }
+
+        .height-indicator {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 2;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .input-label span {
+            font-weight: normal;
+            color: var(--text-light);
+            font-size: 0.85rem;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(77, 182, 172, 0.2);
+        }
+
+        .unit-toggle {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .unit-btn {
+            flex: 1;
+            padding: 10px;
+            background: var(--background);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+
+        .unit-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .calculate-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .calculate-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .calculate-btn:active {
+            transform: scale(0.98);
+        }
+
+        .result-container {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: var(--radius);
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 500;
+            opacity: 0;
+            height: 0;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .result-container.show {
+            opacity: 1;
+            height: auto;
+            padding: 20px;
+            margin-top: 25px;
+        }
+
+        .result-success {
+            background-color: rgba(0, 121, 107, 0.1);
+            color: var(--success);
+            border-left: 4px solid var(--success);
+        }
+
+        .result-error {
+            background-color: rgba(244, 67, 54, 0.1);
+            color: var(--error);
+            border-left: 4px solid var(--error);
+        }
+
+        .result-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .calculation-steps {
+            margin-top: 15px;
+            text-align: left;
+            font-size: 0.9rem;
+            color: var(--text-light);
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .step {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .step-number {
+            background: var(--primary);
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.7rem;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 600px) {
+            .calculator-container {
+                margin: 10px;
+            }
+            
+            .calculator-title {
+                font-size: 1.5rem;
+            }
+            
+            .cylinder-graphic {
+                width: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator-container">
+        <div class="calculator-header">
+            <h1 class="calculator-title">Cylinder Height Calculator</h1>
+            <p class="calculator-subtitle">Calculate height from volume and radius</p>
+        </div>
+
+        <div class="calculator-body">
+            <div class="visualization">
+                <svg class="cylinder-graphic" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Cylinder Body -->
+                    <rect x="60" y="50" width="80" height="100" fill="var(--primary)" opacity="0.6" rx="5" ry="5"/>
+                    
+                    <!-- Top Ellipse -->
+                    <ellipse cx="100" cy="50" rx="40" ry="15" fill="var(--primary-light)" opacity="0.8"/>
+                    
+                    <!-- Bottom Ellipse -->
+                    <ellipse cx="100" cy="150" rx="40" ry="15" fill="var(--primary-dark)" opacity="0.8"/>
+                    
+                    <!-- Height Indicator -->
+                    <line x1="150" y1="50" x2="150" y2="150" stroke="var(--accent)" stroke-width="2" stroke-dasharray="4 2"/>
+                    
+                    <!-- Height Label -->
+                    <text id="heightLabel" x="160" y="100" font-size="12" fill="var(--text)">h = 0</text>
+                </svg>
+                <div class="height-indicator" id="heightIndicator">Height: 0 units</div>
+            </div>
+
+            <div class="formula-display">
+                <p class="formula-text">The height is calculated using:</p>
+                <p class="formula">h = V / (π × r²)</p>
+            </div>
+
+            <div class="unit-toggle">
+                <button class="unit-btn active" onclick="setUnit('cm')">Centimeters</button>
+                <button class="unit-btn" onclick="setUnit('in')">Inches</button>
+                <button class="unit-btn" onclick="setUnit('m')">Meters</button>
+            </div>
+
+            <div class="input-group">
+                <label for="radius" class="input-label">
+                    Radius (r)
+                    <span>Enter value ≥ 0</span>
+                </label>
+                <input type="number" id="radius" class="input-field" placeholder="Enter radius" step="any" min="0" oninput="updateCalculation()">
+            </div>
+
+            <div class="input-group">
+                <label for="volume" class="input-label">
+                    Volume (V)
+                    <span>Enter value ≥ 0</span>
+                </label>
+                <input type="number" id="volume" class="input-field" placeholder="Enter volume" step="any" min="0" oninput="updateCalculation()">
+            </div>
+
+            <button class="calculate-btn" onclick="calculateHeight()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9 9H11V15H9V9ZM13 9H15V15H13V9ZM12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20Z" fill="white"/>
+                </svg>
+                Calculate Height
+            </button>
+
+            <div id="result" class="result-container">
+                <div class="result-value" id="resultValue">0.00</div>
+                <div id="resultText">Enter values to calculate</div>
+                <div class="calculation-steps" id="calculationSteps">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-text">Enter radius and volume to see calculation steps</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentUnit = 'cm';
+        let currentHeight = 0;
+        
+        // Set unit and update UI
+        function setUnit(unit) {
+            currentUnit = unit;
+            document.querySelectorAll('.unit-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.textContent.toLowerCase().includes(unit)) {
+                    btn.classList.add('active');
+                }
+            });
+            updateResultDisplay();
+        }
+        
+        // Update visualization based on current height
+        function updateVisualization(height) {
+            const cylinderGraphic = document.querySelector('.cylinder-graphic');
+            const heightLabel = document.getElementById('heightLabel');
+            const heightIndicator = document.getElementById('heightIndicator');
+            
+            // Scale the visualization (max height of 120 for visibility)
+            const visualHeight = Math.min(height * 10, 120) || 100;
+            
+            // Update SVG elements
+            document.querySelector('rect').setAttribute('height', visualHeight);
+            document.querySelector('ellipse:last-of-type').setAttribute('cy', 50 + visualHeight);
+            document.querySelector('line').setAttribute('y2', 50 + visualHeight);
+            document.querySelector('line').setAttribute('y1', 50);
+            heightLabel.setAttribute('y', 50 + visualHeight/2);
+            
+            // Update labels
+            heightLabel.textContent = `h = ${height.toFixed(2)}`;
+            heightIndicator.textContent = `Height: ${height.toFixed(2)} ${currentUnit}`;
+        }
+        
+        // Update calculation as user types
+        function updateCalculation() {
+            const radiusInput = document.getElementById('radius');
+            const volumeInput = document.getElementById('volume');
+            
+            const radius = parseFloat(radiusInput.value) || 0;
+            const volume = parseFloat(volumeInput.value) || 0;
+            
+            // If we have valid positive numbers, show live calculation
+            if (radius > 0 && volume > 0) {
+                calculateHeight();
+            } else {
+                resetResultDisplay();
+                updateVisualization(0);
+            }
+        }
+        
+        // Calculate and display the height
+        function calculateHeight() {
+            const radiusInput = document.getElementById('radius');
+            const volumeInput = document.getElementById('volume');
+            const resultContainer = document.getElementById('result');
+            const resultValue = document.getElementById('resultValue');
+            const resultText = document.getElementById('resultText');
+            const calculationSteps = document.getElementById('calculationSteps');
+            
+            // Reset display state
+            resultContainer.className = 'result-container';
+            
+            // Validate inputs
+            const radius = parseFloat(radiusInput.value);
+            const volume = parseFloat(volumeInput.value);
+            
+            if (isNaN(radius) || isNaN(volume)) {
+                showError('Please enter valid numbers for both fields');
+                return;
+            }
+            
+            if (radius <= 0 || volume <= 0) {
+                showError('Both values must be greater than zero');
+                return;
+            }
+            
+            // Calculate height
+            const baseArea = Math.PI * Math.pow(radius, 2);
+            const height = volume / baseArea;
+            currentHeight = height;
+            
+            // Update result display
+            resultValue.textContent = height.toFixed(4);
+            resultText.innerHTML = `Height: <strong>${height.toFixed(4)} ${currentUnit}</strong>`;
+            
+            // Update calculation steps
+            calculationSteps.innerHTML = `
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-text">Calculate base area: π × r² = 3.1416 × ${radius.toFixed(2)}² = ${baseArea.toFixed(4)} ${currentUnit}²</div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-text">Divide volume by base area: ${volume.toFixed(2)} ÷ ${baseArea.toFixed(4)}</div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-text">Resulting height: <strong>${height.toFixed(4)} ${currentUnit}</strong></div>
+                </div>
+            `;
+            
+            // Update visualization
+            updateVisualization(height);
+            
+            // Show success state
+            resultContainer.classList.add('result-success', 'show');
+            
+            // Animate the result
+            animateResult();
+        }
+        
+        // Show error message
+        function showError(message) {
+            const resultContainer = document.getElementById('result');
+            const resultText = document.getElementById('resultText');
+            
+            resultText.textContent = message;
+            resultContainer.className = 'result-container result-error show';
+            updateVisualization(0);
+        }
+        
+        // Reset result display
+        function resetResultDisplay() {
+            const resultContainer = document.getElementById('result');
+            const resultValue = document.getElementById('resultValue');
+            const resultText = document.getElementById('resultText');
+            const calculationSteps = document.getElementById('calculationSteps');
+            
+            resultValue.textContent = '0.00';
+            resultText.textContent = 'Enter values to calculate';
+            calculationSteps.innerHTML = `
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-text">Enter radius and volume to see calculation steps</div>
+                </div>
+            `;
+            resultContainer.className = 'result-container';
+        }
+        
+        // Animate the result display
+        function animateResult() {
+            const resultValue = document.getElementById('resultValue');
+            const resultContainer = document.getElementById('result');
+            const cylinderGraphic = document.querySelector('.cylinder-graphic');
+            
+            resultValue.style.transform = 'scale(1.2)';
+            resultContainer.style.transform = 'scale(1.02)';
+            cylinderGraphic.style.transform = 'scale(1.05)';
+            
+            setTimeout(() => {
+                resultValue.style.transform = 'scale(1)';
+                resultContainer.style.transform = 'scale(1)';
+                cylinderGraphic.style.transform = 'scale(1)';
+            }, 300);
+        }
+        
+        // Initialize
+        document.getElementById('radius').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                calculateHeight();
+            }
+        });
+        
+        document.getElementById('volume').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                calculateHeight();
+            }
+        });
+        
+        updateVisualization(0);
+    </script>
+</body>
+</html>

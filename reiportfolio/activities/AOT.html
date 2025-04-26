@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Triangle Area Calculator</title>
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4895ef;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --success-color: #4cc9f0;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            line-height: 1.6;
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        
+        .description {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #555;
+        }
+        
+        .formula {
+            text-align: center;
+            font-size: 1.2em;
+            background-color: #f0f8ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            color: var(--secondary-color);
+            border-left: 4px solid var(--accent-color);
+        }
+        
+        .input-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        input[type="number"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="number"]:focus {
+            border-color: var(--accent-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(72, 149, 239, 0.2);
+        }
+        
+        .live-result {
+            text-align: center;
+            margin: 25px 0;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #e8f4fd;
+            font-size: 1.2em;
+            min-height: 90px;
+            transition: all 0.3s;
+        }
+        
+        .result-placeholder {
+            color: #999;
+            font-style: italic;
+        }
+        
+        .result-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 10px 0;
+        }
+        
+        .calculation {
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        
+        .triangle-img {
+            display: block;
+            margin: 20px auto;
+            max-width: 100%;
+            height: auto;
+            filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.1));
+        }
+        
+        .units {
+            margin-top: 5px;
+            text-align: center;
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.5em;
+            }
+            
+            .result-value {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Live Triangle Area Calculator</h1>
+        <p class="description">See the area update instantly as you enter measurements</p>
+        
+        <div class="formula">
+            Area = ½ × base × height
+        </div>
+        
+        <svg class="triangle-img" width="250" height="200" viewBox="0 0 250 200" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="125,20 230,180 20,180" fill="#4361ee" fill-opacity="0.2" stroke="#4361ee" stroke-width="2"/>
+            <line x1="20" y1="180" x2="230" y2="180" stroke="#333" stroke-width="2" stroke-dasharray="5,5"/>
+            <text x="125" y="195" text-anchor="middle" font-size="14" fill="#333">Base</text>
+            <line x1="125" y1="20" x2="125" y2="180" stroke="#333" stroke-width="2" stroke-dasharray="5,5"/>
+            <text x="140" y="100" text-anchor="start" font-size="14" fill="#333">Height</text>
+        </svg>
+        
+        <div class="input-group">
+            <label for="base">Base Length:</label>
+            <input type="number" id="base" placeholder="Enter base measurement" min="0" step="any" oninput="updateArea()">
+        </div>
+        
+        <div class="input-group">
+            <label for="height">Height:</label>
+            <input type="number" id="height" placeholder="Enter height measurement" min="0" step="any" oninput="updateArea()">
+        </div>
+        
+        <div class="live-result" id="result">
+            <div id="result-content">
+                <div class="result-placeholder">Enter base and height to calculate area</div>
+            </div>
+        </div>
+        
+        <div class="units">
+            <small>All measurements should be in the same units</small>
+        </div>
+    </div>
+
+    <script>
+        function updateArea() {
+            const base = parseFloat(document.getElementById('base').value);
+            const height = parseFloat(document.getElementById('height').value);
+            const resultContent = document.getElementById('result-content');
+            
+            // Clear previous content and animation classes
+            resultContent.innerHTML = '';
+            resultContent.className = '';
+            
+            if (isNaN(base) || isNaN(height)) {
+                resultContent.innerHTML = '<div class="result-placeholder">Enter both base and height to calculate area</div>';
+                return;
+            }
+            
+            if (base <= 0 || height <= 0) {
+                resultContent.innerHTML = '<div class="result-error">Base and height must be positive numbers</div>';
+                return;
+            }
+            
+            const area = 0.5 * base * height;
+            const calculationText = `(½ × ${base} × ${height})`;
+            
+            resultContent.className = 'fade-in';
+            resultContent.innerHTML = `
+                <div class="result-value">${area.toFixed(2)}</div>
+                <div>square units</div>
+                <div class="calculation">${calculationText}</div>
+            `;
+        }
+    </script>
+</body>
+</html>

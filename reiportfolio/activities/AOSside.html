@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Area of Square Calculator</title>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --accent: #4895ef;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #4cc9f0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: var(--dark);
+        }
+        
+        .calculator {
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            padding: 30px;
+            transition: all 0.3s ease;
+        }
+        
+        h1 {
+            text-align: center;
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        .description {
+            text-align: center;
+            color: var(--dark);
+            margin-bottom: 25px;
+            line-height: 1.6;
+            opacity: 0.8;
+        }
+        
+        .formula {
+            text-align: center;
+            font-size: 1.5rem;
+            margin: 20px 0;
+            color: var(--secondary);
+            font-weight: bold;
+        }
+        
+        .input-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+        
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+        
+        .result-container {
+            background-color: var(--light);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 25px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .result-label {
+            font-size: 0.9rem;
+            color: var(--dark);
+            opacity: 0.7;
+            margin-bottom: 5px;
+        }
+        
+        .result-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .square-graphic {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+            background-color: var(--accent);
+            opacity: 0.8;
+            position: relative;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(72, 149, 239, 0.3);
+        }
+        
+        .square-graphic::after {
+            content: 'a';
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--dark);
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 480px) {
+            .calculator {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <h1>Square Area Calculator</h1>
+        <p class="description">Calculate the area of a square by entering the length of one side. The area is calculated automatically as you type.</p>
+        
+        <div class="square-graphic">
+            A = a²
+        </div>
+        
+        <div class="input-group">
+            <label for="side">Side Length (a):</label>
+            <input type="number" id="side" placeholder="Enter side length" step="any" min="0">
+        </div>
+        
+        <div class="result-container">
+            <div class="result-label">Area of Square:</div>
+            <div class="result-value" id="result">0</div>
+        </div>
+    </div>
+
+    <script>
+        const sideInput = document.getElementById('side');
+        const resultDisplay = document.getElementById('result');
+        
+        sideInput.addEventListener('input', updateArea);
+        
+        function updateArea() {
+            const side = parseFloat(sideInput.value) || 0;
+            const area = Math.pow(side, 2);
+            resultDisplay.textContent = area.toFixed(2);
+            
+            // Animate the result
+            resultDisplay.style.transform = 'scale(1.1)';
+            setTimeout(() => {
+                resultDisplay.style.transform = 'scale(1)';
+            }, 200);
+        }
+    </script>
+</body>
+</html>

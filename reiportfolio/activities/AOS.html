@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Square Area Calculator</title>
+    <style>
+        :root {
+            --primary: #9c27b0;
+            --primary-light: #e1bee7;
+            --primary-dark: #7b1fa2;
+            --secondary: #ff9800;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --error: #f44336;
+            --border-radius: 12px;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--dark);
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .calculator-container {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+        
+        h1 {
+            color: var(--primary-dark);
+            text-align: center;
+            margin-bottom: 1rem;
+            font-weight: 700;
+            font-size: 1.8rem;
+        }
+        
+        .description {
+            color: var(--dark);
+            text-align: center;
+            margin-bottom: 1.5rem;
+            opacity: 0.8;
+            font-size: 0.95rem;
+        }
+        
+        .formula-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin: 1.5rem 0;
+        }
+        
+        .formula {
+            background-color: var(--primary-light);
+            padding: 0.8rem 1.2rem;
+            border-radius: var(--border-radius);
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            color: var(--primary-dark);
+            text-align: center;
+            font-size: 1.1rem;
+        }
+        
+        .visualization {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 2rem 0;
+            position: relative;
+            height: 180px;
+        }
+        
+        .square {
+            width: 150px;
+            height: 150px;
+            background-color: var(--primary);
+            opacity: 0.8;
+            position: relative;
+            border-radius: 8px;
+            transition: all 0.5s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .side-label {
+            position: absolute;
+            color: var(--primary-dark);
+            font-weight: bold;
+            font-size: 0.9rem;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 2px 5px;
+            border-radius: 4px;
+        }
+        
+        .side-label.top {
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .side-label.right {
+            right: -40px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+        
+        input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(156, 39, 176, 0.2);
+        }
+        
+        .result-container {
+            background-color: var(--primary-light);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            margin-top: 1.5rem;
+            transition: all 0.3s;
+        }
+        
+        .result-title {
+            text-align: center;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--primary-dark);
+        }
+        
+        .result-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary-dark);
+            text-align: center;
+            margin: 0.5rem 0;
+            transition: all 0.3s;
+        }
+        
+        .calculation-steps {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: var(--dark);
+            opacity: 0.8;
+            text-align: left;
+            background-color: white;
+            padding: 1rem;
+            border-radius: 8px;
+        }
+        
+        .step {
+            margin-bottom: 0.5rem;
+        }
+        
+        .unit-toggle {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 1rem;
+        }
+        
+        .unit-btn {
+            padding: 0.5rem 1rem;
+            background-color: #e9ecef;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+        }
+        
+        .unit-btn.active {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        @media (max-width: 600px) {
+            .calculator-container {
+                padding: 1.5rem;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .visualization {
+                height: 150px;
+            }
+            
+            .square {
+                width: 120px;
+                height: 120px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator-container">
+        <h1>Square Area Calculator</h1>
+        <p class="description">Calculate the area of a square using the side length. The area is equal to the length of one side multiplied by itself.</p>
+        
+        <div class="formula-container">
+            <div class="formula">A = a²</div>
+        </div>
+        
+        <div class="visualization">
+            <div class="square" id="squareVisual">
+                <span id="areaValue">0</span>
+            </div>
+            <div class="side-label top" id="sideLabelTop">a = 0</div>
+            <div class="side-label right" id="sideLabelRight">a = 0</div>
+        </div>
+        
+        <div class="input-group">
+            <label for="side">Side Length (a):</label>
+            <input type="number" id="side" placeholder="Enter side length" step="any" min="0" oninput="updateCalculation()">
+        </div>
+        
+        <div class="unit-toggle">
+            <button class="unit-btn active" onclick="setUnit('cm')">Centimeters</button>
+            <button class="unit-btn" onclick="setUnit('in')">Inches</button>
+            <button class="unit-btn" onclick="setUnit('px')">Pixels</button>
+        </div>
+        
+        <div class="result-container" id="resultContainer">
+            <div class="result-title">Area (A):</div>
+            <div class="result-value" id="result">0</div>
+            <div class="calculation-steps" id="calculationSteps">
+                <div class="step">Enter a side length to see the calculation</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentUnit = 'cm';
+        
+        function setUnit(unit) {
+            currentUnit = unit;
+            document.querySelectorAll('.unit-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.textContent.toLowerCase().includes(unit)) {
+                    btn.classList.add('active');
+                }
+            });
+            updateCalculation();
+        }
+        
+        function updateCalculation() {
+            const sideInput = document.getElementById('side');
+            const resultElement = document.getElementById('result');
+            const calculationStepsElement = document.getElementById('calculationSteps');
+            const resultContainer = document.getElementById('resultContainer');
+            const sideLabelTop = document.getElementById('sideLabelTop');
+            const sideLabelRight = document.getElementById('sideLabelRight');
+            const squareVisual = document.getElementById('squareVisual');
+            const areaValue = document.getElementById('areaValue');
+            
+            if (sideInput.value === '' || isNaN(sideInput.value)) {
+                resultElement.textContent = `0 ${currentUnit}²`;
+                calculationStepsElement.innerHTML = '<div class="step">Enter a side length to see the calculation</div>';
+                resultContainer.style.backgroundColor = 'var(--primary-light)';
+                sideLabelTop.textContent = `a = 0 ${currentUnit}`;
+                sideLabelRight.textContent = `a = 0 ${currentUnit}`;
+                squareVisual.style.width = '150px';
+                squareVisual.style.height = '150px';
+                areaValue.textContent = '0';
+                return;
+            }
+            
+            const side = parseFloat(sideInput.value);
+            
+            if (side < 0) {
+                resultElement.textContent = 'Invalid';
+                calculationStepsElement.innerHTML = '<div class="step">Side length cannot be negative</div>';
+                resultContainer.style.backgroundColor = '#ffebee';
+                return;
+            }
+            
+            // Update visualization size proportionally (max 200px for visibility)
+            const maxVisualSize = 200;
+            const visualSize = Math.min(side * 10, maxVisualSize);
+            squareVisual.style.width = `${visualSize}px`;
+            squareVisual.style.height = `${visualSize}px`;
+            
+            const area = Math.pow(side, 2);
+            resultElement.textContent = `${area.toFixed(4)} ${currentUnit}²`;
+            areaValue.textContent = `${area.toFixed(2)} ${currentUnit}²`;
+            
+            // Update labels
+            sideLabelTop.textContent = `a = ${side.toFixed(2)} ${currentUnit}`;
+            sideLabelRight.textContent = `a = ${side.toFixed(2)} ${currentUnit}`;
+            
+            // Show calculation steps
+            calculationStepsElement.innerHTML = `
+                <div class="step"><strong>Calculation steps:</strong></div>
+                <div class="step">1. Take the side length: a = ${side.toFixed(4)} ${currentUnit}</div>
+                <div class="step">2. Square the side length: ${side.toFixed(4)} × ${side.toFixed(4)}</div>
+                <div class="step">3. Result: A = ${area.toFixed(4)} ${currentUnit}²</div>
+                <div class="step"><em>This means the square can fit ${area.toFixed(4)} 1${currentUnit} × 1${currentUnit} units inside it</em></div>
+            `;
+            
+            // Visual feedback
+            resultContainer.style.backgroundColor = '#f3e5f5';
+            
+            // Animation effect
+            resultElement.style.transform = 'scale(1.1)';
+            squareVisual.style.transform = 'scale(1.05)';
+            setTimeout(() => {
+                resultElement.style.transform = 'scale(1)';
+                squareVisual.style.transform = 'scale(1)';
+            }, 300);
+        }
+        
+        // Initialize
+        updateCalculation();
+    </script>
+</body>
+</html>

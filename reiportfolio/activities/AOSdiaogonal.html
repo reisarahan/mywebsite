@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Square Diagonal Calculator</title>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --accent: #4895ef;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #4cc9f0;
+            --warning: #f72585;
+            --border-radius: 12px;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--dark);
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .calculator-container {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+        
+        h1 {
+            color: var(--secondary);
+            text-align: center;
+            margin-bottom: 1rem;
+            font-weight: 700;
+            font-size: 1.8rem;
+        }
+        
+        .description {
+            color: var(--dark);
+            text-align: center;
+            margin-bottom: 1.5rem;
+            opacity: 0.8;
+            font-size: 0.95rem;
+        }
+        
+        .formula-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin: 1.5rem 0;
+        }
+        
+        .formula {
+            background-color: var(--light);
+            padding: 0.8rem 1.2rem;
+            border-radius: var(--border-radius);
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            color: var(--warning);
+            text-align: center;
+            font-size: 1.1rem;
+        }
+        
+        .visualization {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 2rem 0;
+            position: relative;
+            height: 180px;
+        }
+        
+        .square {
+            width: 120px;
+            height: 120px;
+            background-color: var(--accent);
+            opacity: 0.8;
+            position: relative;
+            transform: rotate(45deg);
+            border-radius: 8px;
+            transition: all 0.5s ease;
+        }
+        
+        .diagonal-line {
+            position: absolute;
+            width: 2px;
+            height: 170px;
+            background-color: var(--warning);
+            transform: rotate(-45deg);
+            transition: all 0.5s ease;
+        }
+        
+        .side-label {
+            position: absolute;
+            color: var(--secondary);
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        
+        .side-label.top {
+            top: 20%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+        }
+        
+        .side-label.right {
+            top: 50%;
+            right: 20%;
+            transform: translate(50%, -50%) rotate(-45deg);
+        }
+        
+        .diagonal-label {
+            position: absolute;
+            color: var(--warning);
+            font-weight: bold;
+            font-size: 0.9rem;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(45deg);
+        }
+        
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--secondary);
+        }
+        
+        input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+        
+        .result-container {
+            background-color: var(--light);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            margin-top: 1.5rem;
+            transition: all 0.3s;
+        }
+        
+        .result-title {
+            text-align: center;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .result-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--warning);
+            text-align: center;
+            margin: 0.5rem 0;
+            transition: all 0.3s;
+        }
+        
+        .calculation-steps {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: var(--dark);
+            opacity: 0.8;
+            text-align: left;
+            background-color: white;
+            padding: 1rem;
+            border-radius: 8px;
+        }
+        
+        .step {
+            margin-bottom: 0.5rem;
+        }
+        
+        .unit-toggle {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 1rem;
+        }
+        
+        .unit-btn {
+            padding: 0.5rem 1rem;
+            background-color: #e9ecef;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+        }
+        
+        .unit-btn.active {
+            background-color: var(--accent);
+            color: white;
+        }
+        
+        @media (max-width: 600px) {
+            .calculator-container {
+                padding: 1.5rem;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .visualization {
+                height: 150px;
+            }
+            
+            .square {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .diagonal-line {
+                height: 141px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator-container">
+        <h1>Square Diagonal Calculator</h1>
+        <p class="description">Calculate the diagonal length of a square using the side length. The diagonal divides the square into two congruent right triangles.</p>
+        
+        <div class="formula-container">
+            <div class="formula">d = a × √2</div>
+        </div>
+        
+        <div class="visualization">
+            <div class="square"></div>
+            <div class="diagonal-line"></div>
+            <div class="side-label top" id="sideLabel">a = 0</div>
+            <div class="side-label right" id="sideLabel2">a = 0</div>
+            <div class="diagonal-label" id="diagonalLabel">d = 0</div>
+        </div>
+        
+        <div class="input-group">
+            <label for="side">Side Length (a):</label>
+            <input type="number" id="side" placeholder="Enter side length" step="any" min="0" oninput="updateCalculation()">
+        </div>
+        
+        <div class="unit-toggle">
+            <button class="unit-btn active" onclick="setUnit('cm')">Centimeters</button>
+            <button class="unit-btn" onclick="setUnit('in')">Inches</button>
+            <button class="unit-btn" onclick="setUnit('px')">Pixels</button>
+        </div>
+        
+        <div class="result-container" id="resultContainer">
+            <div class="result-title">Diagonal Length (d):</div>
+            <div class="result-value" id="result">-</div>
+            <div class="calculation-steps" id="calculationSteps">
+                <div class="step">Enter a side length to see the calculation</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentUnit = 'cm';
+        
+        function setUnit(unit) {
+            currentUnit = unit;
+            document.querySelectorAll('.unit-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.textContent.toLowerCase().includes(unit)) {
+                    btn.classList.add('active');
+                }
+            });
+            updateCalculation();
+        }
+        
+        function updateCalculation() {
+            const sideInput = document.getElementById('side');
+            const resultElement = document.getElementById('result');
+            const calculationStepsElement = document.getElementById('calculationSteps');
+            const resultContainer = document.getElementById('resultContainer');
+            const sideLabels = document.querySelectorAll('.side-label');
+            const diagonalLabel = document.getElementById('diagonalLabel');
+            const square = document.querySelector('.square');
+            const diagonalLine = document.querySelector('.diagonal-line');
+            
+            if (sideInput.value === '' || isNaN(sideInput.value)) {
+                resultElement.textContent = '-';
+                calculationStepsElement.innerHTML = '<div class="step">Enter a side length to see the calculation</div>';
+                resultContainer.style.backgroundColor = '#f8f9fa';
+                sideLabels.forEach(label => label.textContent = `a = 0 ${currentUnit}`);
+                diagonalLabel.textContent = `d = 0 ${currentUnit}`;
+                square.style.width = '120px';
+                square.style.height = '120px';
+                diagonalLine.style.height = '170px';
+                return;
+            }
+            
+            const side = parseFloat(sideInput.value);
+            
+            if (side < 0) {
+                resultElement.textContent = 'Invalid';
+                calculationStepsElement.innerHTML = '<div class="step">Side length cannot be negative</div>';
+                resultContainer.style.backgroundColor = '#fff5f5';
+                return;
+            }
+            
+            // Update visualization size proportionally (max 200px for visibility)
+            const maxVisualSize = 200;
+            const visualSize = Math.min(side * 10, maxVisualSize);
+            square.style.width = `${visualSize}px`;
+            square.style.height = `${visualSize}px`;
+            diagonalLine.style.height = `${visualSize * Math.sqrt(2)}px`;
+            
+            const diagonal = Math.sqrt(2) * side;
+            resultElement.textContent = `${diagonal.toFixed(4)} ${currentUnit}`;
+            
+            // Update labels
+            sideLabels.forEach(label => label.textContent = `a = ${side.toFixed(2)} ${currentUnit}`);
+            diagonalLabel.textContent = `d = ${diagonal.toFixed(2)} ${currentUnit}`;
+            
+            // Show calculation steps
+            calculationStepsElement.innerHTML = `
+                <div class="step"><strong>Calculation steps:</strong></div>
+                <div class="step">1. Take the side length: a = ${side.toFixed(4)} ${currentUnit}</div>
+                <div class="step">2. Multiply by √2 (≈1.4142): ${side.toFixed(4)} × 1.4142</div>
+                <div class="step">3. Result: d = ${diagonal.toFixed(4)} ${currentUnit}</div>
+                <div class="step"><em>Note: √2 is an irrational number (approximately 1.41421356237)</em></div>
+            `;
+            
+            // Visual feedback
+            resultContainer.style.backgroundColor = '#f0f8ff';
+            
+            // Animation effect
+            resultElement.style.transform = 'scale(1.1)';
+            setTimeout(() => {
+                resultElement.style.transform = 'scale(1)';
+            }, 300);
+        }
+        
+        // Initialize
+        updateCalculation();
+    </script>
+</body>
+</html>

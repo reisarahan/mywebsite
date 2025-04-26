@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Circle Area Calculator</title>
+    <style>
+        :root {
+            --primary: #2e7d32;
+            --primary-light: #4caf50;
+            --primary-dark: #1b5e20;
+            --secondary: #a5d6a7;
+            --text: #e8f5e9;
+            --background: #ffffff;
+            --card: #000000;
+            --error: #ef9a9a;
+        }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .calculator-card {
+            width: 100%;
+            max-width: 450px;
+            background-color: var(--card);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        h1 {
+            font-weight: 600;
+            font-size: 1.8rem;
+            margin: 0 0 0.5rem;
+            color: var(--primary-light);
+            background: linear-gradient(90deg, var(--primary-light), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .subtitle {
+            color: rgba(232, 245, 233, 0.7);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        
+        .formula-container {
+            background: rgba(76, 175, 80, 0.1);
+            border-radius: 12px;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border: 1px solid rgba(76, 175, 80, 0.2);
+        }
+        
+        .formula {
+            font-family: 'Courier New', monospace;
+            font-size: 1.2rem;
+            text-align: center;
+            color: var(--secondary);
+            margin: 0.5rem 0;
+        }
+        
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--secondary);
+        }
+        
+        input[type="number"] {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        input[type="number"]:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.3);
+        }
+        
+        button {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+        }
+        
+        button:hover {
+            background: linear-gradient(135deg, var(--primary-light), var(--primary));
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(46, 125, 50, 0.3);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        #result {
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-top: 1rem;
+            display: none;
+            background: rgba(76, 175, 80, 0.1);
+            border: 1px solid rgba(76, 175, 80, 0.2);
+        }
+        
+        .circle-visual {
+            display: flex;
+            justify-content: center;
+            margin: 1.5rem 0;
+        }
+        
+        .circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: conic-gradient(var(--primary) 0%, transparent 0%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: 0 0 0 4px var(--primary-dark), 
+                        inset 0 0 0 4px var(--primary-dark);
+        }
+        
+        .circle::before {
+            content: "r";
+            position: absolute;
+            color: var(--secondary);
+            font-weight: bold;
+        }
+        
+        .error {
+            color: var(--error);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+        
+        @media (max-width: 480px) {
+            .calculator-card {
+                padding: 1.5rem;
+                border-radius: 12px;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator-card">
+        <div class="header">
+            <h1>Circle Area Calculator</h1>
+            <p class="subtitle">Calculate the area of a circle using the radius</p>
+        </div>
+        
+        <div class="circle-visual">
+            <div class="circle" id="circleDisplay"></div>
+        </div>
+        
+        <div class="formula-container">
+            <div class="formula">A = π × r²</div>
+            <div class="subtitle" style="text-align: center; margin-top: 0.5rem;">
+                Where π ≈ 3.14159 and r is the radius
+            </div>
+        </div>
+        
+        <div class="input-group">
+            <label for="radius">Radius (r)</label>
+            <input type="number" id="radius" placeholder="Enter radius value" step="any" min="0">
+            <div class="error" id="error"></div>
+        </div>
+        
+        <button onclick="calculateArea()">Calculate Area</button>
+        
+        <div id="result"></div>
+    </div>
+
+    <script>
+        const radiusInput = document.getElementById('radius');
+        const resultDiv = document.getElementById('result');
+        const errorDiv = document.getElementById('error');
+        const circleDisplay = document.getElementById('circleDisplay');
+        
+        function calculateArea() {
+            // Reset previous states
+            errorDiv.style.display = 'none';
+            resultDiv.style.display = 'none';
+            
+            const radius = parseFloat(radiusInput.value);
+            
+            // Validate input
+            if (isNaN(radius) || radiusInput.value === '') {
+                showError('Please enter a valid number');
+                updateCircleVisual(0);
+                return;
+            }
+            
+            if (radius < 0) {
+                showError('Radius cannot be negative');
+                updateCircleVisual(0);
+                return;
+            }
+            
+            // Calculate area
+            const area = Math.PI * Math.pow(radius, 2);
+            resultDiv.textContent = `Area = ${area.toFixed(2)} units²`;
+            resultDiv.style.display = 'block';
+            
+            // Update circle visualization
+            updateCircleVisual(radius);
+        }
+        
+        function showError(message) {
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+        
+        function updateCircleVisual(radius) {
+            // Scale the radius for visualization purposes
+            const maxRadius = 60; // Half of circle's width/height
+            const displayRadius = Math.min(radius, maxRadius);
+            const percentage = (displayRadius / maxRadius) * 100;
+            
+            circleDisplay.style.background = `
+                conic-gradient(var(--primary) ${percentage}%, transparent ${percentage}%)
+            `;
+            
+            // Position the 'r' label
+            const angle = Math.min(percentage * 3.6, 270); // Limit to 270 degrees
+            const rad = angle * (Math.PI / 180);
+            const x = 50 + 40 * Math.cos(rad);
+            const y = 50 + 40 * Math.sin(rad);
+            
+            circleDisplay.style.setProperty('--x', `${x}%`);
+            circleDisplay.style.setProperty('--y', `${y}%`);
+        }
+        
+        // Allow pressing Enter key to calculate
+        radiusInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                calculateArea();
+            }
+        });
+        
+        // Initialize with empty circle
+        updateCircleVisual(0);
+    </script>
+</body>
+</html>
